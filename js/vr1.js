@@ -75,7 +75,7 @@ var pi = 3.14159265359;
 			requestAnimationFrame( render );
 			cube.rotation.x += 0.05;
 			cube.rotation.y += 0.05;
-			renderer.render( scene, camera );
+			//renderer.render( scene, camera );
 
 			 //Update VR headset position and apply to camera.
 			 controls.update();
