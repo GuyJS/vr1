@@ -11,6 +11,14 @@ var pi = 3.14159265359;
 		renderer.setClearColor( skyColour, 1 ); // sky
 		renderer.setSize( window.innerWidth, window.innerHeight);
 		document.body.appendChild( renderer.domElement);
+
+		//Apply VR headset positional data to camera.
+		var controls = new THREE.VRControls( camera );
+
+		//Apply VR stereo rendering to renderer
+		var effect = new THREE.VREffect( renderer );
+		effect.setSize( window.innerWidth, window.innerHeight );
+
 		var everything = new THREE.Object3D();
 
 		//add a cube
@@ -68,5 +76,42 @@ var pi = 3.14159265359;
 			cube.rotation.x += 0.05;
 			cube.rotation.y += 0.05;
 			renderer.render( scene, camera );
+
+			 //Update VR headset position and apply to camera.
+			 controls.update();
+
+			 // Render the scene through the VREffect.
+			 effect.render( scene, camera );
 		}
+
 		render();
+
+
+
+/**********************************  Boring Stuff  **************************************/
+
+document.body.addEventListener( 'click', function(){
+  effect.setFullScreen( true );
+})
+
+
+//Listen for keyboard events
+function onkey(event) {
+  event.preventDefault();
+
+  if (event.keyCode == 90) { // z
+    controls.resetSensor(); //zero rotation
+  } else if (event.keyCode == 70 || event.keyCode == 13) { //f or enter
+    effect.setFullScreen(true) //fullscreen
+  }
+};
+window.addEventListener("keydown", onkey, true);
+
+
+//Handle window resizes
+function onWindowResize() {
+  camera.aspect = window.innerWidth / window.innerHeight;
+  camera.updateProjectionMatrix();
+  effect.setSize( window.innerWidth, window.innerHeight );
+}
+window.addEventListener( 'resize', onWindowResize, false );
