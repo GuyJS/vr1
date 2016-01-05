@@ -147,6 +147,13 @@ var pi = 3.14159265359;
 				wingPosition++;
 			}
 
+			for (var i = 0 ; i <= 2 ; i++){
+				bird[i].position.z -= 0.5;
+				if (bird[i].position.z < -30) {
+					bird[i].position.z = 30;
+				}
+			}
+
 			cube.rotation.x += 0.05;
 			cube.rotation.y += 0.05;
 			//renderer.render( scene, camera );
