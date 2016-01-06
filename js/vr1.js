@@ -171,9 +171,9 @@ var pi = 3.14159265359;
 
 /**********************************  Boring Stuff  **************************************/
 
-// document.body.addEventListener( 'click', function(){
-//   effect.setFullScreen( true );
-// })
+document.body.addEventListener( 'click', function(){
+  effect.setFullScreen( true );
+})
 
 
 //Listen for keyboard events
