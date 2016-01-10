@@ -1,11 +1,13 @@
 var pi = 3.14159265359;
 		var groundSize = 200;
 		var groundColour = 0xaa6611;
-		var skyColour = 0x88bbdd;
+		var skyColour = 0x446688;//0x88bbdd;
 		var cubeColour = 0x00ff00;
 
 		//setup
 		var scene = new THREE.Scene();
+		scene.fog = new THREE.FogExp2( 0x446688, .1);
+		// scene.fog = new THREE.Fog(0x8888aa, 0.5, 10);
 		var camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 100 );
 		var renderer = new THREE.WebGLRenderer();
 		renderer.setClearColor( skyColour, 1 ); // sky
@@ -21,11 +23,6 @@ var pi = 3.14159265359;
 
 		var everything = new THREE.Object3D();
 
-		//add a cube
-		var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-		var material = new THREE.MeshLambertMaterial( {color: cubeColour } );
-		var cube = new THREE.Mesh( geometry, material );
-		everything.add( cube );
 		camera.position.z = 2;
 
 		//ground
@@ -37,7 +34,7 @@ var pi = 3.14159265359;
 		everything.add( ground );
 
 		//trees
-		var treeNumber = 50;
+		var treeNumber = 100;
 		var tree = [];
 		for (var i = 0 ; i < treeNumber; i++ ){
 
@@ -60,49 +57,102 @@ var pi = 3.14159265359;
 				tree[i].add(branchLayer);
 			}
 
-			tree[i].position.x = Math.random()*50-25;
-			tree[i].position.z = Math.random()*50-25;
+			var xPos = Math.random()*50-25;
+			while (xPos > -5 && xPos < 5){
+				xPos = Math.random()*50-25;
+			}
+
+			var zPos = Math.random()*50-25;
+			while (zPos > -5 && zPos < 5){
+				zPos = Math.random()*50-25;
+			}
+			tree[i].position.x = xPos;
+			tree[i].position.z = zPos;
 			everything.add(tree[i]);
 		}
 
+		function Bird(wingLength, wingDepth, xOffset){
 		
+			this.obj3d = new THREE.Object3D();
+			this.obj3d.position.x += xOffset;
+			this.bird = [];
+			this.bird[0] = new THREE.Object3D();
+			var birdBodyGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8);
+			var birdBodyMaterial = new THREE.MeshLambertMaterial( {color: 0xff8800} );
+			var birdBody = new THREE.Mesh(birdBodyGeometry, birdBodyMaterial);
+			birdBody.position.y = 2;
+			birdBody.rotation.x = -pi/2;
+			this.bird[0].add(birdBody);
+
+			var wingShape = new THREE.Shape();
+			this.wingLength = wingLength;
+			this.wingDepth = wingDepth;
+
+			
+			wingShape.moveTo( 0,0 );
+			wingShape.lineTo( 0, this.wingLength );
+			wingShape.lineTo( wingDepth, this.wingLength/2 );
+			wingShape.lineTo( 0, 0 );
+
+			var wingGeom = new THREE.ShapeGeometry( wingShape );
+			var wingMesh1 = new THREE.Mesh( wingGeom, new THREE.MeshBasicMaterial( { color: 0xff8800, side: THREE.DoubleSide, wireframe:false } ) ) ;
+			var wingMesh2 = new THREE.Mesh( wingGeom, new THREE.MeshBasicMaterial( { color: 0xff8800, side: THREE.DoubleSide, wireframe:false } ) ) ;
+
+			wingMesh1.position.y = 2;
+			wingMesh1.rotation.z = pi/2;
+			wingMesh1.rotation.x = pi/2;
+			this.bird[1] = wingMesh1;
+			wingMesh2.position.y = 2;
+			wingMesh2.rotation.z = -pi/2;
+			wingMesh2.rotation.x = -pi/2;
+			this.bird[2] = wingMesh2;
+			this.wingPosition = 1;
+			this.obj3d.add(this.bird[0]);
+			this.obj3d.add(this.bird[1]);
+			this.obj3d.add(this.bird[2]);
+
+			this.flightSpeed = Math.random()*0.5+0.3;
+
+			this.animate = function(wingSpeed, zOffset){
+
+				//flaps wings
+				this.wingSpeed = wingSpeed;
+				this.zOffset = zOffset;
+				if (this.wingPosition == 0){
+					this.bird[1].rotation.y = -pi/6;
+					this.bird[2].rotation.y = -pi/6;
+					this.wingPosition++;
+				} else if (this.wingPosition == wingSpeed){
+					this.bird[1].rotation.y = 0;
+					this.bird[2].rotation.y = 0;
+					this.wingPosition++;
+				} else if (this.wingPosition == 2*wingSpeed){
+					this.bird[1].rotation.y = pi/6;
+					this.bird[2].rotation.y = pi/6;
+					this.wingPosition++;
+				} else if (this.wingPosition >= 3*wingSpeed){
+					this.wingPosition = 0;
+				}else {
+					this.wingPosition++;
+				}
+
+				//moves the bird
+				this.obj3d.position.z -= this.flightSpeed;
+				if (this.obj3d.position.z < 0-this.zOffset ) {
+					this.obj3d.position.z = this.zOffset;
+					this.obj3d.position.x = Math.random()*100-50;
+				}
+			}
+		}		
 
 		//bird
+		//(wingLength, wingDepth, flightSpeed (0.5 is good), xOffset )
 		var bird = [];
-		bird[0] = new THREE.Object3D();
-		var birdBodyGeometry = new THREE.CylinderGeometry(0.1, 0.1, 0.8);
-		var birdBodyMaterial = new THREE.MeshLambertMaterial( {color: 0xff8800} );
-		var birdBody = new THREE.Mesh(birdBodyGeometry, birdBodyMaterial);
-		birdBody.position.y = 2;
-		birdBody.rotation.x = -pi/2;
-		bird[0].add(birdBody);
-
-		var wingShape = new THREE.Shape();
-		var wingLength = 0.8, wingWidth = 2;
-
-		
-		wingShape.moveTo( 0,0 );
-		wingShape.lineTo( 0, wingWidth );
-		wingShape.lineTo( wingLength/2, wingWidth/2 );
-		wingShape.lineTo( 0, 0 );
-
-		var wingGeom = new THREE.ShapeGeometry( wingShape );
-		var wingMesh1 = new THREE.Mesh( wingGeom, new THREE.MeshBasicMaterial( { color: 0xff8800, side: THREE.DoubleSide, wireframe:false } ) ) ;
-		var wingMesh2 = new THREE.Mesh( wingGeom, new THREE.MeshBasicMaterial( { color: 0xff8800, side: THREE.DoubleSide, wireframe:false } ) ) ;
-
-		wingMesh1.position.y = 2;
-		wingMesh1.rotation.z = pi/2;
-		wingMesh1.rotation.x = pi/2;
-		bird[1] = wingMesh1;
-		wingMesh2.position.y = 2;
-		wingMesh2.rotation.z = -pi/2;
-		wingMesh2.rotation.x = -pi/2;
-		bird[2] = wingMesh2;
-		var wingPosition = 1;
-
-		 everything.add( bird[0] );
-		 everything.add( bird[1] );
-		 everything.add( bird[2] );
+		for (var k = 0 ; k < 20 ; k++ ){
+			bird[k] = new Bird(2, 0.4, Math.random()*100-50);
+			bird[k].obj3d.position.z += Math.random()*100-50;
+			everything.add(bird[k].obj3d);
+		}
 
 		//light
 		var light1 = new THREE.PointLight( 0xffffff, 0.8, 200);
@@ -126,37 +176,9 @@ var pi = 3.14159265359;
 		function render(){
 			requestAnimationFrame( render );
 
-			//wing animation
-			//higher is slower
-			var wingSpeed = 3;
-			if (wingPosition == 0){
-				bird[1].rotation.y = -pi/6;
-				bird[2].rotation.y = -pi/6;
-				wingPosition++;
-			} else if (wingPosition == wingSpeed){
-				bird[1].rotation.y = 0;
-				bird[2].rotation.y = 0;
-				wingPosition++;
-			} else if (wingPosition == 2*wingSpeed){
-				bird[1].rotation.y = pi/6;
-				bird[2].rotation.y = pi/6;
-				wingPosition++;
-			} else if (wingPosition == 3*wingSpeed){
-				wingPosition = 0;
-			}else {
-				wingPosition++;
+			for (var a = 0 ; a < 20 ; a++ ){
+				bird[a].animate(3, 50);
 			}
-
-			for (var i = 0 ; i <= 2 ; i++){
-				bird[i].position.z -= 0.5;
-				if (bird[i].position.z < -30) {
-					bird[i].position.z = 30;
-				}
-			}
-
-			cube.rotation.x += 0.05;
-			cube.rotation.y += 0.05;
-			//renderer.render( scene, camera );
 
 			 //Update VR headset position and apply to camera.
 			 controls.update();
@@ -171,9 +193,9 @@ var pi = 3.14159265359;
 
 /**********************************  Boring Stuff  **************************************/
 
-document.body.addEventListener( 'click', function(){
-  effect.setFullScreen( true );
-})
+// document.body.addEventListener( 'click', function(){
+//   effect.setFullScreen( true );
+// })
 
 
 //Listen for keyboard events
