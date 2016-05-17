@@ -168,8 +168,6 @@ var pi = 3.14159265359;
 		// light3.castShadow = true;
 
 		everything.add( light1 );
-		// everything.add( light2 );
-		// everything.add( light3 );
 
 		scene.add(everything);
 		//animation loop
