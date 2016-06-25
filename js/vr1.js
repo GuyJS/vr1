@@ -58,12 +58,12 @@ var pi = 3.14159265359;
 			}
 
 			var xPos = Math.random()*50-25;
-			while (xPos > -5 && xPos < 5){
+			while (Math.abs(xPos) < 3){
 				xPos = Math.random()*50-25;
 			}
 
 			var zPos = Math.random()*50-25;
-			while (zPos > -5 && zPos < 5){
+			while (Math.abs(zPos) < 3){
 				zPos = Math.random()*50-25;
 			}
 			tree[i].position.x = xPos;
@@ -158,7 +158,18 @@ var pi = 3.14159265359;
 		var light1 = new THREE.PointLight( 0xffffff, 0.8, 200);
 		light1.position.set( -10, 25, -2 );
 		light1.castShadow = true;
+		everything.add( light1 );
 
+		var moonGeometry = new THREE.IcosahedronGeometry(1, 3);
+		var moonMaterial = new THREE.MeshLambertMaterial( {color:0xeeeeff } );
+		var moon = new THREE.Mesh(moonGeometry, moonMaterial);
+
+		moon.position.set(2, 15, 5);
+		everything.add(moon);
+
+		var moonLight = new THREE.PointLight(0xffffff, 50, 5);
+		moonLight.position.set(3, 12.5, 6.5);
+		everything.add(moonLight);
 		// var light2 = new THREE.PointLight( 0xffffff, 0.8, 200);
 		// light2.position.set( 100, 25, -20 );
 		// light2.castShadow = true;
@@ -167,7 +178,7 @@ var pi = 3.14159265359;
 		// light3.position.set( 0, 25, 200 );
 		// light3.castShadow = true;
 
-		everything.add( light1 );
+		
 		// everything.add( light2 );
 		// everything.add( light3 );
 
