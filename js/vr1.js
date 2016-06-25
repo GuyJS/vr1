@@ -178,9 +178,13 @@ var pi = 3.14159265359;
 		// light3.position.set( 0, 25, 200 );
 		// light3.castShadow = true;
 
+<<<<<<< HEAD
 		
 		// everything.add( light2 );
 		// everything.add( light3 );
+=======
+		everything.add( light1 );
+>>>>>>> origin/gh-pages
 
 		scene.add(everything);
 		//animation loop
