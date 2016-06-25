@@ -177,14 +177,11 @@ var pi = 3.14159265359;
 		// var light3 = new THREE.PointLight( 0xffffff, 0.8, 200);
 		// light3.position.set( 0, 25, 200 );
 		// light3.castShadow = true;
-
-<<<<<<< HEAD
 		
 		// everything.add( light2 );
 		// everything.add( light3 );
-=======
+
 		everything.add( light1 );
->>>>>>> origin/gh-pages
 
 		scene.add(everything);
 		//animation loop
@@ -203,10 +200,6 @@ var pi = 3.14159265359;
 		}
 
 		render();
-
-
-
-/**********************************  Boring Stuff  **************************************/
 
 // document.body.addEventListener( 'click', function(){
 //   effect.setFullScreen( true );
