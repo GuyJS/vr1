@@ -1,4 +1,4 @@
-var pi = 3.14159265359;
+		var pi = 3.14159265359;
 		var groundSize = 200;
 		var groundColour = 0xaa6611;
 		var skyColour = 0x446688;//0x88bbdd;
@@ -72,7 +72,7 @@ var pi = 3.14159265359;
 		}
 
 		function Bird(wingLength, wingDepth, xOffset){
-		
+
 			this.obj3d = new THREE.Object3D();
 			this.obj3d.position.x += xOffset;
 			this.bird = [];
@@ -88,7 +88,6 @@ var pi = 3.14159265359;
 			this.wingLength = wingLength;
 			this.wingDepth = wingDepth;
 
-			
 			wingShape.moveTo( 0,0 );
 			wingShape.lineTo( 0, this.wingLength );
 			wingShape.lineTo( wingDepth, this.wingLength/2 );
@@ -143,7 +142,7 @@ var pi = 3.14159265359;
 					this.obj3d.position.x = Math.random()*100-50;
 				}
 			}
-		}		
+		}
 
 		//bird
 		//(wingLength, wingDepth, flightSpeed (0.5 is good), xOffset )
@@ -170,16 +169,6 @@ var pi = 3.14159265359;
 		var moonLight = new THREE.PointLight(0xffffff, 50, 5);
 		moonLight.position.set(3, 12.5, 6.5);
 		everything.add(moonLight);
-		// var light2 = new THREE.PointLight( 0xffffff, 0.8, 200);
-		// light2.position.set( 100, 25, -20 );
-		// light2.castShadow = true;
-
-		// var light3 = new THREE.PointLight( 0xffffff, 0.8, 200);
-		// light3.position.set( 0, 25, 200 );
-		// light3.castShadow = true;
-		
-		// everything.add( light2 );
-		// everything.add( light3 );
 
 		everything.add( light1 );
 
@@ -201,9 +190,11 @@ var pi = 3.14159265359;
 
 		render();
 
-// document.body.addEventListener( 'click', function(){
-//   effect.setFullScreen( true );
-// })
+//*********** document stuff ****************//
+
+document.addEventListener( 'click', function(){
+	renderer.domElement.webkitRequestFullscreen();
+})
 
 
 //Listen for keyboard events
@@ -213,7 +204,7 @@ function onkey(event) {
   if (event.keyCode == 90) { // z
     controls.resetSensor(); //zero rotation
   } else if (event.keyCode == 70 || event.keyCode == 13) { //f or enter
-    effect.setFullScreen(true) //fullscreen
+    renderer.domElement.webkitRequestFullscreen();
   }
 };
 window.addEventListener("keydown", onkey, true);
@@ -222,6 +213,7 @@ window.addEventListener("keydown", onkey, true);
 //Handle window resizes
 function onWindowResize() {
   camera.aspect = window.innerWidth / window.innerHeight;
+	renderer.setSize(window.innerWidth, window.innerHeight);
   camera.updateProjectionMatrix();
   effect.setSize( window.innerWidth, window.innerHeight );
 }
